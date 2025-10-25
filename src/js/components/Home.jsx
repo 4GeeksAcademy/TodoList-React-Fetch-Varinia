@@ -1,28 +1,52 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
+const TodoListApi = () => {
 
-//create your first component
-const Home = () => {
+	let [lista, setLista] = useState ([])
+
+	const crearUsuario = () => {
+		const API_URL ='https://playground.4geeks.com/todo/'
+
+		fetch(API_URL+"users/varinia",{
+			method: "POST", 
+			headers:{
+				"Content-Type: application/json"
+			},
+
+		})
+		.then(response => response.json())  
+        .then((data) => console.log(data))  
+        .catch(error => { console.log(error) }) 
+	}
+	const traerTareas = () =>{
+		const API_URL ='https://playground.4geeks.com/todo/'
+		fetch(API_URL+"users/varinia")
+			.then((response)=>{
+				if(response.status === 404){
+					crearUsuario()
+				}
+				return response.json
+			})
+			.then((data)=>setLista(data.todo))
+
+	}
+
+
+
 	return (
-		<div className="text-center">
+		<div>
+			<h1>Todo List con Api y Fetch</h1>
+			<div className="paper bg-body text-body">
+				<input type="text" placeholder="What needs to be done?" onChange={escribirTarea} value={tarea} onKeyDown={agregar}/>
+					<ul className="list-unstyled text-start ">
+						{lista.map((item)=>(<li key={item.id}>{item.label} <span onClick={()=>eliminarTarea(index)}> χ</span></li>))}				
+					</ul>
+					<p>{lista.length} item left</p>            		
+			</div>
             
 
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
 		</div>
 	);
 };
 
-export default Home;
+export default TodoListApi;
